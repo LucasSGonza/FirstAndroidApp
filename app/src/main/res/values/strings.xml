@@ -2,4 +2,7 @@
     <string name="app_name">Lista de Contatos</string>
     <string name="name_editText">Nome</string>
     <string name="phone_editText">Telefone</string>
+    <string name="btt_saveContact">Salvar Contato</string>
+    <string name="btt_goToContactList">Lista de Contatos</string>
+    <string name="btt_clearList">Limpar Lista</string>
 </resources>
