@@ -7,7 +7,7 @@
     >
 
     <androidx.appcompat.widget.LinearLayoutCompat
-        android:id="@+id/layout_for_editTexts"
+        android:id="@+id/layout_for_edit_texts"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_constraintTop_toTopOf="parent"
@@ -18,21 +18,21 @@
         >
 
         <androidx.appcompat.widget.AppCompatEditText
-            android:id="@+id/name_editText"
+            android:id="@+id/name_edit_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:hint="@string/name_editText"
-            android:inputType="text"
+            android:hint="@string/name_edit_text"
+            android:inputType="textPersonName"
             android:textSize="25sp"
             android:layout_marginRight="50dp"
             >
         </androidx.appcompat.widget.AppCompatEditText>
 
         <androidx.appcompat.widget.AppCompatEditText
-            android:id="@+id/phone_editText"
+            android:id="@+id/phone_edit_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:hint="@string/phone_editText"
+            android:hint="@string/phone_edit_text"
             android:inputType="number"
             android:textSize="25sp"
             >
@@ -47,30 +47,30 @@
         android:orientation="vertical"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/layout_for_editTexts"
+        app:layout_constraintTop_toBottomOf="@id/layout_for_edit_texts"
         android:layout_marginTop="30dp"
         >
         <com.google.android.material.button.MaterialButton
-            android:id="@+id/btt_saveContact"
+            android:id="@+id/btt_save_contact"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/btt_saveContact"
+            android:text="@string/btt_save_contact"
             >
         </com.google.android.material.button.MaterialButton>
 
         <com.google.android.material.button.MaterialButton
-            android:id="@+id/btt_goToContactList"
+            android:id="@+id/btt_go_to_contactList"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/btt_goToContactList"
+            android:text="@string/btt_go_to_contactList"
             >
         </com.google.android.material.button.MaterialButton>
 
         <com.google.android.material.button.MaterialButton
-            android:id="@+id/btt_clearList"
+            android:id="@+id/btt_clear_list"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/btt_clearList"
+            android:text="@string/btt_clear_list"
             >
         </com.google.android.material.button.MaterialButton>
 
