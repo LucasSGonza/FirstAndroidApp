@@ -8,35 +8,57 @@
 
     <androidx.appcompat.widget.LinearLayoutCompat
         android:id="@+id/layout_for_edit_texts"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="@id/layout_for_buttons"
+        android:layout_marginTop="150dp"
+        android:orientation="vertical"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        android:orientation="horizontal"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginLeft="50dp"
+        android:layout_marginRight="50dp"
         >
 
-        <androidx.appcompat.widget.AppCompatEditText
-            android:id="@+id/name_edit_text"
-            android:layout_width="wrap_content"
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/name_text_input_layout"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
             android:hint="@string/name_edit_text"
-            android:inputType="textPersonName"
-            android:textSize="25sp"
-            android:layout_marginRight="50dp"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            app:counterEnabled="true"
+            app:counterMaxLength="20"
             >
-        </androidx.appcompat.widget.AppCompatEditText>
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/name_text_input_edit_text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="text"
+                android:maxLength="20"
+                >
+            </com.google.android.material.textfield.TextInputEditText>
+        </com.google.android.material.textfield.TextInputLayout>
 
-        <androidx.appcompat.widget.AppCompatEditText
-            android:id="@+id/phone_edit_text"
-            android:layout_width="wrap_content"
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/phone_text_input_layout"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/phone_edit_text"
-            android:inputType="number"
-            android:textSize="25sp"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            app:counterEnabled="true"
+            app:counterMaxLength="12"
+            app:prefixText="+55"
+            app:prefixTextColor="@color/purple_500"
             >
-        </androidx.appcompat.widget.AppCompatEditText>
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/phone_text_input_edit_text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="phone"
+                android:maxLength="15"
+                >
+            </com.google.android.material.textfield.TextInputEditText>
+        </com.google.android.material.textfield.TextInputLayout>
 
     </androidx.appcompat.widget.LinearLayoutCompat>
 
@@ -75,6 +97,5 @@
         </com.google.android.material.button.MaterialButton>
 
     </androidx.appcompat.widget.LinearLayoutCompat>
-
 
 </androidx.constraintlayout.widget.ConstraintLayout>

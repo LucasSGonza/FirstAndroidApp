@@ -7,8 +7,9 @@
     <string name="btt_clear_list">Limpar Lista</string>
     <string name="toast_when_contact_created_with_success">Contato criado com sucesso!</string>
     <string name="toast_when_contact_list_cleared_with_success">Sua lista de contatos foi limpa com sucesso!</string>
-    <string name="toast_when_name_invalid">Por favor, preencha um nome</string>
-    <string name="toast_when_phone_number_invalid">Por favor, preencha um telefone</string>
+    <string name="toast_when_name_is_empty">Por favor, preencha um nome</string>
+    <string name="toast_when_phone_number_is_empty">Por favor, preencha um telefone</string>
     <string name="toast_when_contact_already_exist">Já existe um contato com esse telefone!</string>
     <string name="toast_when_contact_list_already_empty">Sua lista de contatos já está vazia!</string>
+    <string name="toast_when_contact_list_is_full">Sua lista de contatos está cheia!</string>
 </resources>

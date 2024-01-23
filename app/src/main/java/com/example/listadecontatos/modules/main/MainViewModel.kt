@@ -1,5 +1,6 @@
 package com.example.listadecontatos.modules.main
 
+import android.content.Context
 import android.widget.Toast
 import androidx.lifecycle.ViewModel
 import com.example.listadecontatos.model.Contact
@@ -8,13 +9,19 @@ class MainViewModel : ViewModel() {
 
     private var contactList = mutableListOf<Contact>()
 
-    fun createContact(contactName: String, contactPhoneNumber: String): Boolean {
-        val contactIfAlreadyExist = contactList.firstOrNull { contactPhoneNumber == it.phoneNumber }
-        //se já existir um contato, retorna false
-        contactIfAlreadyExist?.let {
-            return false
+    //remove this
+    fun getContactList(): MutableList<Contact> {
+        return this.contactList
+    }
+
+    fun createContact(contactName: String, contactPhoneNumber: String, context: Context) {
+        val contactIfAlreadyExist = contactList.any { contactPhoneNumber == it.phoneNumber }
+
+        if (contactIfAlreadyExist) {
+            Toast.makeText(context,"error", Toast.LENGTH_LONG).show()
+            return
         }
-        //se não existir um contato com os dados fornecidos, criar um com eles e retorna true
+
         contactList.add(
             Contact(
                 contactList.size,
@@ -22,7 +29,7 @@ class MainViewModel : ViewModel() {
                 contactPhoneNumber
             )
         )
-        return true
+        Toast.makeText(context, "success", Toast.LENGTH_LONG).show()
     }
 
     fun clearContactList(): Boolean {
