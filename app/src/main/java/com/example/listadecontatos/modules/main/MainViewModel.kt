@@ -1,43 +1,46 @@
 package com.example.listadecontatos.modules.main
 
-import android.content.Context
-import android.widget.Toast
 import androidx.lifecycle.ViewModel
 import com.example.listadecontatos.model.Contact
+import com.example.listadecontatos.model.ContactList
 
 class MainViewModel : ViewModel() {
 
-    private var contactList = mutableListOf<Contact>()
+    private var contactListInstance = ContactList
 
-    //remove this
-    fun getContactList(): MutableList<Contact> {
-        return this.contactList
-    }
+    //create a dictionary as a return : flag, Contact? --> also return a Contact for use in the UI
+    //change Map<> to Pair<>
+    fun createContact(contactName: String, contactPhoneNumber: String): Pair<Boolean, Contact?> {
+        val contactIfAlreadyExist = contactListInstance.verifyIfContactAlreadyExist(contactPhoneNumber)
 
-    fun createContact(contactName: String, contactPhoneNumber: String, context: Context) {
-        val contactIfAlreadyExist = contactList.any { contactPhoneNumber == it.phoneNumber }
-
-        if (contactIfAlreadyExist) {
-            Toast.makeText(context,"error", Toast.LENGTH_LONG).show()
-            return
+        contactIfAlreadyExist?.let {
+            return Pair(false, it)
         }
 
-        contactList.add(
-            Contact(
-                contactList.size,
-                contactName,
-                contactPhoneNumber
-            )
+        val contact = Contact(
+            contactListInstance.getContactListSize(),
+            contactName,
+            contactPhoneNumber
         )
-        Toast.makeText(context, "success", Toast.LENGTH_LONG).show()
+
+        contactListInstance.createContact(contact)
+        return (true to contact)
     }
 
-    fun clearContactList(): Boolean {
-        if (contactList.isNotEmpty()) {
-            contactList.clear()
-            return true
-        }
-        return false
+    fun verifyIfContactAlreadyExist(contactPhoneNumber: String): Boolean {
+        return contactListInstance.verifyIfContactAlreadyExist(contactPhoneNumber) != null
+    }
+
+    fun verifyIfContactListIsFull(): Boolean {
+        return contactListInstance.verifyIfContactListIsFull()
+    }
+
+    fun verifyIfContactListIsEmpty(): Boolean {
+        return contactListInstance.verifyIfContactListIsEmpty()
+    }
+
+    fun clearContactList() {
+        contactListInstance.clearContactList()
     }
 
 }

@@ -1,37 +1,45 @@
 package com.example.listadecontatos.modules.main
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.widget.doOnTextChanged
 import androidx.lifecycle.ViewModelProvider
 import com.example.listadecontatos.R
 import com.example.listadecontatos.databinding.ActivityMainBinding
+import com.example.listadecontatos.modules.contactList.ContactListActivity
 
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
     private lateinit var myViewModel: MainViewModel
-    private var isNameValid: Boolean = false
-    private var isPhoneValid: Boolean = false
+    private val isNameValid: Boolean
+        get() = binding.nameTextInputLayout.error == null
+    private val isPhoneValid: Boolean
+        get() = binding.phoneTextInputLayout.error == null
+    private val isListEmpty: Boolean
+        get() = myViewModel.verifyIfContactListIsEmpty()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
         myViewModel = ViewModelProvider(this)[MainViewModel::class.java]
-        setupClickListeners()
-        setupInputsListeners()
-        setupVisual()
+
+        setupListeners()
     }
 
-    private fun setupVisual() {
-        binding.bttSaveContact.isEnabled = false
+    private fun setupListeners() {
+        setupClickListeners()
+        setupInputsListeners()
     }
 
     private fun setupClickListeners() {
         createContact()
+        goToContactList()
         clearContactList()
     }
 
@@ -40,41 +48,50 @@ class MainActivity : AppCompatActivity() {
         phoneInputListener()
     }
 
-    private fun shouldEnableSaveContactBtt() {
-        Log.e("testBtt", "isNameValid: $isNameValid, isPhoneValid: $isPhoneValid")
-        binding.bttSaveContact.isEnabled = (isNameValid && isPhoneValid)
+    private fun handleSaveContactBtn() {
+        binding.bttSaveContact.isEnabled = isNameValid && isPhoneValid
     }
 
-    private fun enableInputTexts() {
-        binding.nameTextInputEditText.isEnabled = true
-        binding.phoneTextInputEditText.isEnabled = true
+    private fun handleCleanListBtn() {
+        binding.bttClearList.isEnabled = !isListEmpty
+    }
+
+    private fun shouldEnableFields(flag: Boolean) {
+        handleSaveContactBtn()
+        with(binding) {
+            nameTextInputEditText.isEnabled = flag
+            phoneTextInputEditText.isEnabled = flag
+            nameTextInputLayout.isEnabled = flag
+            phoneTextInputLayout.isEnabled = flag
+        }
     }
 
     private fun nameInputListener() {
-        binding.nameTextInputEditText.doOnTextChanged { text, start, before, count ->
-            text?.let {
-                binding.nameTextInputLayout.error =
-                    if (text.isEmpty()) getString(R.string.toast_when_name_is_empty) else null
-                isNameValid = binding.nameTextInputLayout.error == null
-                shouldEnableSaveContactBtt()
+        with(binding) {
+            nameTextInputEditText.doOnTextChanged { text, start, before, count ->
+                text?.let {
+                    nameTextInputLayout.error =
+                        if (text.isEmpty()) getString(R.string.toast_when_name_is_empty) else null
+                    handleSaveContactBtn()
+                }
             }
         }
     }
 
     private fun phoneInputListener() {
-        binding.phoneTextInputEditText.doOnTextChanged { text, start, before, count ->
-            text?.let {
-                if (text.isNotEmpty()) {
-                    //isso nao deve ser feito aqui => deve ser feito na ViewModel
-                    binding.phoneTextInputLayout.error =
-                        if (myViewModel.getContactList().any { it.phoneNumber == text.toString() })
-                            getString(R.string.toast_when_contact_already_exist) else null
-                } else {
-                    binding.phoneTextInputLayout.error =
-                        getString(R.string.toast_when_phone_number_is_empty)
+        with(binding) {
+            phoneTextInputEditText.doOnTextChanged { text, start, before, count ->
+                text?.let {
+                    phoneTextInputLayout.error = when {
+                        text.isNotEmpty() && myViewModel.verifyIfContactAlreadyExist(text.toString()) -> getString(
+                            R.string.toast_when_contact_already_exist
+                        )
+
+                        text.isNotEmpty() -> null
+                        else -> getString(R.string.toast_when_phone_number_is_empty)
+                    }
+                    handleSaveContactBtn()
                 }
-                isPhoneValid = binding.phoneTextInputLayout.error == null
-                shouldEnableSaveContactBtt()
             }
         }
     }
@@ -83,41 +100,57 @@ class MainActivity : AppCompatActivity() {
         binding.bttSaveContact.setOnClickListener {
             val contactName = binding.nameTextInputEditText.text.toString()
             val contactPhoneNumber = binding.phoneTextInputEditText.text.toString()
-            myViewModel.createContact(contactName, contactPhoneNumber, this)
+            val result = myViewModel.createContact(contactName, contactPhoneNumber)
 
-            //tirar isso daqui => deve ser feito na ViewModel
-            if (myViewModel.getContactList().count() == 3) {
-                binding.bttSaveContact.isEnabled = false
-                binding.nameTextInputEditText.isEnabled = false
-                binding.phoneTextInputEditText.isEnabled = false
+            //search inside the Pair for 'false' flags. If it's false, the contact already exist in the contactList
+            if (!result.first) {
                 Toast.makeText(
                     this,
-                    getString(R.string.toast_when_contact_list_is_full),
-                    Toast.LENGTH_LONG
+                    getString(R.string.toast_when_contact_already_exist),
+                    Toast.LENGTH_SHORT
                 ).show()
             }
-            binding.nameTextInputEditText.text?.clear()
-            binding.phoneTextInputEditText.text?.clear()
+            //if the Pair does not contains 'false', its because the operation was a success!
+            else {
+                Toast.makeText(
+                    this,
+                    getText(R.string.toast_when_contact_created_with_success),
+                    Toast.LENGTH_SHORT
+                ).show()
+                binding.nameTextInputEditText.text?.clear()
+                binding.phoneTextInputEditText.text?.clear()
+                handleCleanListBtn()
+            }
+            //always in the final of the operation, verify if the list is full
+            if (myViewModel.verifyIfContactListIsFull()) {
+                binding.labelForInformation.hint =
+                    getString(R.string.toast_when_contact_list_is_full)
+                binding.labelForInformation.visibility = View.VISIBLE
+                shouldEnableFields(false)
+            }
         }
     }
 
     private fun clearContactList() {
         binding.bttClearList.setOnClickListener {
             //need to add a Dialog
-            if (myViewModel.clearContactList()) {
-                Toast.makeText(
-                    this,
-                    getString(R.string.toast_when_contact_list_cleared_with_success),
-                    Toast.LENGTH_SHORT
-                ).show()
-                enableInputTexts()
-            } else {
-                Toast.makeText(
-                    this,
-                    getString(R.string.toast_when_contact_list_already_empty),
-                    Toast.LENGTH_SHORT
-                ).show()
-            }
+            myViewModel.clearContactList()
+            Toast.makeText(
+                this,
+                getString(R.string.toast_when_contact_list_cleared_with_success),
+                Toast.LENGTH_SHORT
+            ).show()
+            shouldEnableFields(true)
+            binding.labelForInformation.visibility = View.GONE
+            binding.nameTextInputEditText.text?.clear()
+            binding.phoneTextInputEditText.text?.clear()
+            handleCleanListBtn()
+        }
+    }
+
+    private fun goToContactList() {
+        binding.bttGoToContactList.setOnClickListener {
+            startActivity(Intent(this, ContactListActivity::class.java))
         }
     }
 
