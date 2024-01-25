@@ -12,4 +12,5 @@
     <string name="toast_when_contact_already_exist">Já existe um contato com esse telefone!</string>
     <string name="toast_when_contact_list_already_empty">Sua lista de contatos já está vazia!</string>
     <string name="toast_when_contact_list_is_full">Sua lista de contatos está cheia!</string>
+    <string name="btt_return_to_main">Retornar</string>
 </resources>

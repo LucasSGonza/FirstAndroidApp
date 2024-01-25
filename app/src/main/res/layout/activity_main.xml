@@ -1,77 +1,84 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@color/dark_gray"
     >
 
     <com.google.android.material.textview.MaterialTextView
         android:id="@+id/label_for_information"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginTop="50dp"
-        android:textSize="15sp"
         android:clickable="false"
+        android:textSize="15sp"
         android:visibility="gone"
-        >
-    </com.google.android.material.textview.MaterialTextView>
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        ></com.google.android.material.textview.MaterialTextView>
 
     <androidx.appcompat.widget.LinearLayoutCompat
         android:id="@+id/layout_for_edit_texts"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginLeft="50dp"
         android:layout_marginTop="100dp"
+        android:layout_marginRight="50dp"
         android:orientation="vertical"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@id/label_for_information"
-        android:layout_marginLeft="50dp"
-        android:layout_marginRight="50dp"
         >
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/name_text_input_layout"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="10dp"
             android:hint="@string/name_edit_text"
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            app:boxStrokeColor="@color/black"
             app:counterEnabled="true"
             app:counterMaxLength="20"
+            app:hintTextColor="@color/black"
+            app:startIconDrawable="@drawable/baseline_person_24"
+            app:startIconTint="@color/black"
             >
+
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/name_text_input_edit_text"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:inputType="text"
                 android:maxLength="20"
-                >
-            </com.google.android.material.textfield.TextInputEditText>
+                ></com.google.android.material.textfield.TextInputEditText>
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/phone_text_input_layout"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/phone_edit_text"
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            app:boxStrokeColor="@color/black"
             app:counterEnabled="true"
             app:counterMaxLength="12"
+            app:hintTextColor="@color/black"
             app:prefixText="+55"
-            app:prefixTextColor="@color/purple_500"
+            app:prefixTextColor="@color/design_default_color_secondary_variant"
+            app:startIconDrawable="@drawable/baseline_local_phone_24"
+            app:startIconTint="@color/black"
             >
+
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/phone_text_input_edit_text"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:inputType="phone"
                 android:maxLength="15"
-                >
-            </com.google.android.material.textfield.TextInputEditText>
+                ></com.google.android.material.textfield.TextInputEditText>
         </com.google.android.material.textfield.TextInputLayout>
 
     </androidx.appcompat.widget.LinearLayoutCompat>
@@ -80,37 +87,39 @@
         android:id="@+id/layout_for_buttons"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="30dp"
         android:orientation="vertical"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/layout_for_edit_texts"
-        android:layout_marginTop="30dp"
         >
+
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btt_save_contact"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/btt_save_contact"
+            android:backgroundTint="@color/black"
             android:enabled="false"
-            >
-        </com.google.android.material.button.MaterialButton>
+            android:text="@string/btt_save_contact"
+            ></com.google.android.material.button.MaterialButton>
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btt_go_to_contactList"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:backgroundTint="@color/black"
             android:text="@string/btt_go_to_contactList"
-            >
-        </com.google.android.material.button.MaterialButton>
+            android:textColor="@color/white"
+            ></com.google.android.material.button.MaterialButton>
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btt_clear_list"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/btt_clear_list"
+            android:backgroundTint="@color/black"
             android:enabled="false"
-            >
-        </com.google.android.material.button.MaterialButton>
+            android:text="@string/btt_clear_list"
+            ></com.google.android.material.button.MaterialButton>
 
     </androidx.appcompat.widget.LinearLayoutCompat>
 

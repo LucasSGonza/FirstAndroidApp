@@ -5,7 +5,6 @@ object ContactList {
     private var contactList = mutableSetOf<Contact>()
     private var contactListMaxLength: Int = 3
 
-
     fun createContact(contact: Contact) {
         contactList.add(contact)
     }
@@ -29,4 +28,5 @@ object ContactList {
     fun clearContactList() {
         contactList.clear()
     }
+
 }
