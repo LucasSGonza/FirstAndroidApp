@@ -17,10 +17,8 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
     private lateinit var myViewModel: MainViewModel
-    private val isNameValid: Boolean
-        get() = binding.nameTextInputLayout.error == null
-    private val isPhoneValid: Boolean
-        get() = binding.phoneTextInputLayout.error == null
+    private var isNameValid: Boolean = false
+    private var isPhoneValid: Boolean = false
     private val isListEmpty: Boolean
         get() = myViewModel.verifyIfContactListIsEmpty()
 
@@ -50,20 +48,30 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun handleSaveContactBtn() {
-        binding.bttSaveContact.isEnabled = isNameValid && isPhoneValid
+//        Log.e("test", "phone: $isPhoneValid, name: $isNameValid")
+        with(binding.bttSaveContact) {
+            isEnabled = isNameValid && isPhoneValid
+            setTextColor(if (isEnabled) Color.WHITE else Color.parseColor("gray"))
+        }
     }
 
     private fun handleCleanListBtn() {
-        binding.bttClearList.isEnabled = !isListEmpty
+        with(binding.bttClearList) {
+            isEnabled = !isListEmpty
+            setTextColor(if (isEnabled) Color.WHITE else Color.parseColor("gray"))
+        }
     }
 
     private fun shouldEnableFields(flag: Boolean) {
         handleSaveContactBtn()
         with(binding) {
-            nameTextInputEditText.isEnabled = flag
-            phoneTextInputEditText.isEnabled = flag
             nameTextInputLayout.isEnabled = flag
+            nameTextInputLayout.error = null
+            nameTextInputEditText.isEnabled = flag
+
             phoneTextInputLayout.isEnabled = flag
+            phoneTextInputLayout.error = null
+            phoneTextInputEditText.isEnabled = flag
         }
     }
 
@@ -73,6 +81,7 @@ class MainActivity : AppCompatActivity() {
                 text?.let {
                     nameTextInputLayout.error =
                         if (text.isEmpty()) getString(R.string.toast_when_name_is_empty) else null
+                    isNameValid = text.isNotEmpty()
                     handleSaveContactBtn()
                 }
             }
@@ -91,6 +100,8 @@ class MainActivity : AppCompatActivity() {
                         text.isNotEmpty() -> null
                         else -> getString(R.string.toast_when_phone_number_is_empty)
                     }
+                    isPhoneValid =
+                        text.isNotEmpty() && !myViewModel.verifyIfContactAlreadyExist(text.toString())
                     handleSaveContactBtn()
                 }
             }
@@ -124,10 +135,10 @@ class MainActivity : AppCompatActivity() {
             }
             //always in the final of the operation, verify if the list is full
             if (myViewModel.verifyIfContactListIsFull()) {
-                binding.labelForInformation.hint =
+                shouldEnableFields(false)
+                binding.labelForInformation.text =
                     getString(R.string.toast_when_contact_list_is_full)
                 binding.labelForInformation.visibility = View.VISIBLE
-                shouldEnableFields(false)
             }
         }
     }

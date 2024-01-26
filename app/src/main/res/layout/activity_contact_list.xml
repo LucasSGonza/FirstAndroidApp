@@ -17,6 +17,7 @@
         >
 
         <include
+            android:id="@+id/layout_contact1"
             layout="@layout/layout_for_contacts"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -24,6 +25,7 @@
             />
 
         <include
+            android:id="@+id/layout_contact2"
             layout="@layout/layout_for_contacts"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -31,6 +33,7 @@
             />
 
         <include
+            android:id="@+id/layout_contact3"
             layout="@layout/layout_for_contacts"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
