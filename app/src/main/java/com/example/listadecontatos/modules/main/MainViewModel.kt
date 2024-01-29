@@ -18,7 +18,7 @@ class MainViewModel : ViewModel() {
         }
 
         val contact = Contact(
-            contactListInstance.getContactListSize(),
+            contactListInstance.getContactListSize() + 1,
             contactName,
             contactPhoneNumber
         )

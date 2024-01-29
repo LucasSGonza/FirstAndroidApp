@@ -1,6 +1,7 @@
 package com.example.listadecontatos.model
 
 import android.util.Log
+import java.lang.IndexOutOfBoundsException
 
 object ContactList {
 
@@ -32,15 +33,16 @@ object ContactList {
         contactList.clear()
     }
 
-    fun getContactsInfoTheyExist(): Set<Pair<String, String>>? {
-        if (contactList.isNotEmpty()) {
-            var setOfContactInfo = mutableSetOf<Pair<String, String>>()
-            contactList.forEach {
-                setOfContactInfo.add(Pair(it.name, it.phoneNumber))
-            }
-            return setOfContactInfo
-        }
-        return emptySet()
+//    fun getContactList(): Set<Contact> {
+//        return setOf(*contactList.toTypedArray())
+//    }
+
+    fun getCopyOfContactList(): Set<Contact> {
+        return contactList.toMutableSet()
+    }
+
+    fun getContactWithTheIdProvided(id: Int): Contact? {
+        return contactList.firstOrNull { it.id == id }
     }
 
 }
