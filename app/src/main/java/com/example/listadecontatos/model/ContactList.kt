@@ -9,7 +9,6 @@ object ContactList {
     private var contactListMaxLength: Int = 3
 
     fun createContact(contact: Contact) {
-        Log.i("create", "Name: ${contact.name}, Phone: ${contact.phoneNumber}")
         contactList.add(contact)
     }
 

@@ -3,72 +3,75 @@ package com.example.listadecontatos.modules.contactList
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.core.view.isVisible
 import androidx.lifecycle.ViewModelProvider
-import androidx.viewbinding.ViewBinding
+import com.example.listadecontatos.R
 import com.example.listadecontatos.databinding.ActivityContactListBinding
 import com.example.listadecontatos.databinding.LayoutForContactsBinding
-import com.example.listadecontatos.model.Contact
+import java.lang.IndexOutOfBoundsException
 
 class ContactListActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityContactListBinding
     private lateinit var myViewModel: ContactListViewModel
+    private var myLayouts = mutableListOf<LayoutForContactsBinding>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        Log.i("test","on create")
+
         binding = ActivityContactListBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        val layouts = listOf(binding.layoutContact1, binding.layoutContact2, binding.layoutContact3)
-
+        supportActionBar?.hide()
         myViewModel = ViewModelProvider(this)[ContactListViewModel::class.java]
-        layouts.forEach { it.root.visibility = View.GONE }
-
-        myViewModel.getCopyOfContactList().forEachIndexed { index, contact ->
-            layouts[index].apply {
-                this.contactName.text = contact.name
-                this.contactPhone.text = contact.phoneNumber
-                this.root.isVisible = true
-            }
-        }
-
-//        shouldShowAllLayouts(false)
         setupClickListeners()
+
+        if (myViewModel.verifyIfContactListIsEmpty()) {
+            with(binding) {
+                layoutForAllContacts.visibility = View.GONE
+                labelForInformation.text = getString(R.string.contact_list_is_empty)
+                labelForInformation.visibility = View.VISIBLE
+            }
+        } else {
+            setupLayouts()
+        }
     }
 
     override fun onResume() {
         super.onResume()
-//        setupLayouts()
+        Log.i("test","on resume")
     }
 
-//    private fun setupLayouts() {
-//        if (!myViewModel.verifyIfContactListIsEmpty()) {
-//            shouldShowAllLayouts(false)
-//            myViewModel.getCopyOfContactList().forEach {
-//
-//                setupAndShowLayout(it, layout)
-//            }
-//        } else {
-//            shouldShowAllLayouts(false)
-//        }
-//    }
+    override fun onDestroy() {
+        super.onDestroy()
+        Log.i("test","on destroy")
+    }
 
-//    private fun setupAndShowLayout(contact: Contact, layout: LayoutForContactsBinding) {
-//        layout.contactName.text = contact.name
-//        layout.contactPhone.text = contact.phoneNumber
-//        layout.mainLayoutForContact.visibility = View.VISIBLE
-//    }
-//
-//    private fun shouldShowAllLayouts(flag: Boolean) {
-//        val visibility = if (flag) View.VISIBLE else View.GONE
-//        with(binding) {
-//            layoutContact1.mainLayoutForContact.visibility = visibility
-//            layoutContact2.mainLayoutForContact.visibility = visibility
-//            layoutContact3.mainLayoutForContact.visibility = visibility
-//        }
-//    }
+    private fun setupLayouts() {
+        myLayouts.addAll(
+            listOf(
+                binding.layoutContact1,
+                binding.layoutContact2,
+                binding.layoutContact3
+            )
+        )
+        myLayouts.forEach { it.root.visibility = View.GONE }
+
+        myViewModel.getCopyOfContactList().forEach {
+            try {
+                myLayouts[it.id].contactName.text = it.name
+                myLayouts[it.id].contactPhone.text = it.phoneNumber
+                myLayouts[it.id].root.visibility = View.VISIBLE
+            } catch (error: IndexOutOfBoundsException) {
+                Toast.makeText(
+                    this,
+                    getString(R.string.error_when_loading_contacts_data),
+                    Toast.LENGTH_LONG
+                ).show()
+            }
+        }
+    }
 
     private fun setupClickListeners() {
         returnToDashboard()

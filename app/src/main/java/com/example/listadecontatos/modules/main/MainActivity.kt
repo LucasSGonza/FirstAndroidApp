@@ -3,7 +3,6 @@ package com.example.listadecontatos.modules.main
 import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -27,7 +26,7 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
         myViewModel = ViewModelProvider(this)[MainViewModel::class.java]
-
+        supportActionBar?.hide()
         setupListeners()
     }
 
@@ -48,7 +47,6 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun handleSaveContactBtn() {
-//        Log.e("test", "phone: $isPhoneValid, name: $isNameValid")
         with(binding.bttSaveContact) {
             isEnabled = isNameValid && isPhoneValid
             setTextColor(if (isEnabled) Color.WHITE else Color.parseColor("gray"))
@@ -80,7 +78,7 @@ class MainActivity : AppCompatActivity() {
             nameTextInputEditText.doOnTextChanged { text, start, before, count ->
                 text?.let {
                     nameTextInputLayout.error =
-                        if (text.isEmpty()) getString(R.string.toast_when_name_is_empty) else null
+                        if (text.isEmpty()) getString(R.string.error_when_name_is_empty) else null
                     isNameValid = text.isNotEmpty()
                     handleSaveContactBtn()
                 }
@@ -94,11 +92,11 @@ class MainActivity : AppCompatActivity() {
                 text?.let {
                     phoneTextInputLayout.error = when {
                         text.isNotEmpty() && myViewModel.verifyIfContactAlreadyExist(text.toString()) -> getString(
-                            R.string.toast_when_contact_already_exist
+                            R.string.error_when_contact_already_exist
                         )
 
                         text.isNotEmpty() -> null
-                        else -> getString(R.string.toast_when_phone_number_is_empty)
+                        else -> getString(R.string.error_when_phone_number_is_empty)
                     }
                     isPhoneValid =
                         text.isNotEmpty() && !myViewModel.verifyIfContactAlreadyExist(text.toString())
@@ -114,31 +112,27 @@ class MainActivity : AppCompatActivity() {
             val contactPhoneNumber = binding.phoneTextInputEditText.text.toString()
             val result = myViewModel.createContact(contactName, contactPhoneNumber)
 
-            //search inside the Pair for 'false' flags. If it's false, the contact already exist in the contactList
-            if (!result.first) {
+            if (result) {
                 Toast.makeText(
                     this,
-                    getString(R.string.toast_when_contact_already_exist),
+                    getText(R.string.contact_created_with_success),
                     Toast.LENGTH_SHORT
                 ).show()
-            }
-            //if the Pair does not contains 'false', its because the operation was a success!
-            else {
-                Toast.makeText(
-                    this,
-                    getText(R.string.toast_when_contact_created_with_success),
-                    Toast.LENGTH_SHORT
-                ).show()
+
+                shouldEnableFields(true)
                 binding.nameTextInputEditText.text?.clear()
                 binding.phoneTextInputEditText.text?.clear()
                 handleCleanListBtn()
-            }
-            //always in the final of the operation, verify if the list is full
-            if (myViewModel.verifyIfContactListIsFull()) {
-                shouldEnableFields(false)
-                binding.labelForInformation.text =
-                    getString(R.string.toast_when_contact_list_is_full)
-                binding.labelForInformation.visibility = View.VISIBLE
+
+                //always in the final of the operation, verify if the list is full
+                if (myViewModel.verifyIfContactListIsFull()) {
+                    shouldEnableFields(false)
+                    binding.labelForInformation.text =
+                        getString(R.string.error_when_contact_list_is_full)
+                    binding.labelForInformation.visibility = View.VISIBLE
+                } else {
+                    startActivity(Intent(this, ContactListActivity::class.java))
+                }
             }
         }
     }
@@ -149,14 +143,16 @@ class MainActivity : AppCompatActivity() {
             myViewModel.clearContactList()
             Toast.makeText(
                 this,
-                getString(R.string.toast_when_contact_list_cleared_with_success),
+                getString(R.string.contact_list_cleared_with_success),
                 Toast.LENGTH_SHORT
             ).show()
+
             shouldEnableFields(true)
             binding.labelForInformation.visibility = View.GONE
             binding.nameTextInputEditText.text?.clear()
             binding.phoneTextInputEditText.text?.clear()
             handleCleanListBtn()
+
         }
     }
 

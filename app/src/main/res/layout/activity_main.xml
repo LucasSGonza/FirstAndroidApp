@@ -6,32 +6,29 @@
     android:background="@color/dark_gray"
     >
 
-    <com.google.android.material.textview.MaterialTextView
-        android:id="@+id/label_for_information"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="50dp"
-        android:clickable="false"
-        android:textSize="15sp"
-        android:textColor="@color/white"
-        android:visibility="gone"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        ></com.google.android.material.textview.MaterialTextView>
-
     <androidx.appcompat.widget.LinearLayoutCompat
         android:id="@+id/layout_for_edit_texts"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="50dp"
-        android:layout_marginTop="100dp"
+        android:layout_marginTop="150dp"
         android:layout_marginRight="50dp"
         android:orientation="vertical"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@id/label_for_information"
+        app:layout_constraintTop_toTopOf="parent"
         >
+
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/label_for_information"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="20dp"
+            android:clickable="false"
+            android:textColor="@color/white"
+            android:textSize="15sp"
+            android:visibility="gone"
+            ></com.google.android.material.textview.MaterialTextView>
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/name_text_input_layout"
@@ -44,6 +41,7 @@
             app:boxStrokeColor="@color/black"
             app:counterEnabled="true"
             app:counterMaxLength="20"
+            app:counterTextColor="@color/white"
             app:hintTextColor="@color/black"
             app:startIconDrawable="@drawable/baseline_person_24"
             app:startIconTint="@color/black"
@@ -68,6 +66,7 @@
             app:boxStrokeColor="@color/black"
             app:counterEnabled="true"
             app:counterMaxLength="12"
+            app:counterTextColor="@color/white"
             app:expandedHintEnabled="false"
             app:hintTextColor="@color/black"
             app:prefixText="+55"
@@ -113,7 +112,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:backgroundTint="@color/black"
-            android:text="@string/btt_go_to_contactList"
+            android:text="@string/btt_go_to_contact_list"
             android:textColor="@color/white"
             ></com.google.android.material.button.MaterialButton>
 

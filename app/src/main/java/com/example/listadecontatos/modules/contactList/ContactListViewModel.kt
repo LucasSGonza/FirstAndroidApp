@@ -8,10 +8,6 @@ class ContactListViewModel: ViewModel() {
 
     private var contactListInstance = ContactList
 
-    fun getContactListSize(): Int {
-        return contactListInstance.getContactListSize()
-    }
-
     fun getCopyOfContactList(): Set<Contact> {
         return contactListInstance.getCopyOfContactList()
     }
