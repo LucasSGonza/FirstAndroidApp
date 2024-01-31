@@ -2,6 +2,9 @@
     <string name="app_name">Lista de Contatos</string>
     <string name="name_edit_text">Nome</string>
     <string name="phone_edit_text">Telefone</string>
+    <string name="dialog_warning_info">Atenção</string>
+    <string name="dialog_ok">Ok</string>
+    <string name="dialog_cancel">Cancelar</string>
     <string name="btt_save_contact">Salvar Contato</string>
     <string name="btt_go_to_contact_list">Lista de Contatos</string>
     <string name="btt_clear_list">Limpar Lista</string>
@@ -9,8 +12,12 @@
     <string name="contact_created_with_success">Contato criado com sucesso!</string>
     <string name="contact_list_cleared_with_success">Sua lista de contatos foi limpa com sucesso!</string>
     <string name="contact_list_is_empty">Sua lista de contatos está vazia!</string>
+    <string name="dialog_clear_list">Deseja realmente limpar sua lista de contatos?</string>
     <string name="error_when_name_is_empty">Por favor, preencha um nome</string>
+    <string name="error_when_invalid_name">Por favor, insira um nome válido!</string>
     <string name="error_when_phone_number_is_empty">Por favor, preencha um telefone</string>
+    <string name="error_when_invalid_phone_number">Por favor, insira um número de telefone válido!</string>
+    <string name="error_when_provided_not_only_numbers_in_phone">Por favor, insira apenas números para o telefone</string>
     <string name="error_when_contact_already_exist">Já existe um contato com esse telefone!</string>
     <string name="error_when_contact_list_already_empty">Sua lista de contatos já está vazia!</string>
     <string name="error_when_contact_list_is_full">Sua lista de contatos está cheia!</string>

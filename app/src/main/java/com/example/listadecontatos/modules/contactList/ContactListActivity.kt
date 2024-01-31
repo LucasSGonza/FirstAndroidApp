@@ -15,11 +15,9 @@ class ContactListActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityContactListBinding
     private lateinit var myViewModel: ContactListViewModel
-    private var myLayouts = mutableListOf<LayoutForContactsBinding>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        Log.i("test","on create")
 
         binding = ActivityContactListBinding.inflate(layoutInflater)
         setContentView(binding.root)
@@ -38,24 +36,14 @@ class ContactListActivity : AppCompatActivity() {
         }
     }
 
-    override fun onResume() {
-        super.onResume()
-        Log.i("test","on resume")
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        Log.i("test","on destroy")
-    }
-
     private fun setupLayouts() {
-        myLayouts.addAll(
+        val myLayouts =
             listOf(
                 binding.layoutContact1,
                 binding.layoutContact2,
                 binding.layoutContact3
             )
-        )
+
         myLayouts.forEach { it.root.visibility = View.GONE }
 
         myViewModel.getCopyOfContactList().forEach {

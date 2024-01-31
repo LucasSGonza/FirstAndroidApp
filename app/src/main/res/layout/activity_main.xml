@@ -65,12 +65,12 @@
             app:boxBackgroundColor="@color/white"
             app:boxStrokeColor="@color/black"
             app:counterEnabled="true"
-            app:counterMaxLength="12"
+            app:counterMaxLength="11"
             app:counterTextColor="@color/white"
             app:expandedHintEnabled="false"
             app:hintTextColor="@color/black"
-            app:prefixText="+55"
-            app:prefixTextColor="@color/blue"
+            app:prefixText="+55 "
+            app:prefixTextColor="@color/dark_gray"
             app:startIconDrawable="@drawable/baseline_local_phone_24"
             app:startIconTint="@color/black"
             >
@@ -80,7 +80,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:inputType="phone"
-                android:maxLength="15"
+                android:maxLength="11"
                 ></com.google.android.material.textfield.TextInputEditText>
         </com.google.android.material.textfield.TextInputLayout>
 

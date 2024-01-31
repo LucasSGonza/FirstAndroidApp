@@ -32,16 +32,8 @@ object ContactList {
         contactList.clear()
     }
 
-//    fun getContactList(): Set<Contact> {
-//        return setOf(*contactList.toTypedArray())
-//    }
-
     fun getCopyOfContactList(): Set<Contact> {
         return contactList.toMutableSet()
-    }
-
-    fun getContactWithTheIdProvided(id: Int): Contact? {
-        return contactList.firstOrNull { it.id == id }
     }
 
 }
