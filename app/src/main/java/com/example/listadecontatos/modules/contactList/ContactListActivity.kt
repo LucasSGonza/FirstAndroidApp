@@ -1,15 +1,15 @@
 package com.example.listadecontatos.modules.contactList
 
 import android.os.Bundle
-import android.util.Log
+import android.telephony.PhoneNumberUtils
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import com.example.listadecontatos.R
 import com.example.listadecontatos.databinding.ActivityContactListBinding
-import com.example.listadecontatos.databinding.LayoutForContactsBinding
 import java.lang.IndexOutOfBoundsException
+import java.util.Locale
 
 class ContactListActivity : AppCompatActivity() {
 
@@ -25,6 +25,10 @@ class ContactListActivity : AppCompatActivity() {
         myViewModel = ViewModelProvider(this)[ContactListViewModel::class.java]
         setupClickListeners()
 
+        setupView()
+    }
+
+    private fun setupView() {
         if (myViewModel.verifyIfContactListIsEmpty()) {
             with(binding) {
                 layoutForAllContacts.visibility = View.GONE
@@ -37,20 +41,26 @@ class ContactListActivity : AppCompatActivity() {
     }
 
     private fun setupLayouts() {
-        val myLayouts =
+        val myLayouts = with(binding) {
             listOf(
-                binding.layoutContact1,
-                binding.layoutContact2,
-                binding.layoutContact3
+                layoutContact1,
+                layoutContact2,
+                layoutContact3
             )
+        }
 
         myLayouts.forEach { it.root.visibility = View.GONE }
 
         myViewModel.getCopyOfContactList().forEach {
             try {
-                myLayouts[it.id].contactName.text = it.name
-                myLayouts[it.id].contactPhone.text = it.phoneNumber
-                myLayouts[it.id].root.visibility = View.VISIBLE
+                with(myLayouts[it.id]) {
+                    contactName.text = it.name
+                    contactPhone.text = "+55 " + PhoneNumberUtils.formatNumber(
+                        it.phoneNumber,
+                        Locale.getDefault().country
+                    )
+                    root.visibility = View.VISIBLE
+                }
             } catch (error: IndexOutOfBoundsException) {
                 Toast.makeText(
                     this,

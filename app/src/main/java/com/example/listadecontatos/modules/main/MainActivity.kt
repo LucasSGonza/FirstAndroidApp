@@ -3,7 +3,6 @@ package com.example.listadecontatos.modules.main
 import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
-import android.telephony.PhoneNumberUtils
 import android.view.View
 import android.widget.Toast
 import androidx.annotation.DrawableRes
@@ -15,7 +14,6 @@ import androidx.lifecycle.ViewModelProvider
 import com.example.listadecontatos.R
 import com.example.listadecontatos.databinding.ActivityMainBinding
 import com.example.listadecontatos.modules.contactList.ContactListActivity
-import java.util.Locale
 
 class MainActivity : AppCompatActivity() {
 
@@ -40,50 +38,34 @@ class MainActivity : AppCompatActivity() {
         setupListeners()
     }
 
-    private fun showConfirmationDialog(
-        @StringRes title: Int,
-        @StringRes message: Int,
-        @StringRes positiveButton: Int,
-        @StringRes negativeButton: Int,
-        @DrawableRes icon: Int
-    ) {
-        AlertDialog.Builder(this)
-            .setTitle(getString(title))
-            .setMessage(getString(message))
-            .setIcon(icon)
-            .setPositiveButton(positiveButton) { _, _ ->
-                myViewModel.clearContactList()
-
-                Toast.makeText(
-                    this,
-                    getString(R.string.contact_list_cleared_with_success),
-                    Toast.LENGTH_SHORT
-                ).show()
-
-                shouldEnableTextEmptyError(false)
-                shouldEnableFields(true)
-                with(binding) {
-                    labelForInformation.visibility = View.GONE
-                    nameTextInputEditText.text?.clear()
-                    phoneTextInputEditText.text?.clear()
-                }
-                handleCleanListBtn()
-            }
-            .setNegativeButton(negativeButton) { dialog, _ ->
-                dialog.dismiss()
-            }
-            .show()
-    }
-
     private fun setupListeners() {
         setupClickListeners()
         setupInputsListeners()
     }
 
     private fun setupClickListeners() {
-        createContact()
-        goToContactList()
-        clearContactList()
+
+        with(binding) {
+            bttSaveContact.setOnClickListener {
+                createContact()
+            }
+
+            bttGoToContactList.setOnClickListener {
+                startActivity(Intent(it.context, ContactListActivity::class.java))
+            }
+
+            bttClearList.setOnClickListener {
+                showConfirmationDialog(
+                    R.string.dialog_warning_info,
+                    R.string.dialog_clear_list,
+                    R.string.dialog_ok,
+                    R.string.dialog_cancel,
+                    R.drawable.baseline_warning_24,
+                    ::clearContactList
+                )
+            }
+        }
+
     }
 
     private fun setupInputsListeners() {
@@ -105,8 +87,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun shouldEnableFields(flag: Boolean) {
-//        handleSaveContactBtn()
+    private fun shouldEnableTextFields(flag: Boolean) {
         with(binding) {
             nameTextInputLayout.isEnabled = flag
             nameTextInputEditText.isEnabled = flag
@@ -116,9 +97,9 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun shouldEnableTextEmptyError(flag: Boolean) {
-        shouldShowPhoneTextError = flag
-        shouldShowNameTextError = flag
+    private fun disableEmptyTextError() {
+        shouldShowPhoneTextError = false
+        shouldShowNameTextError = false
     }
 
     private fun validateNameText(text: String): Boolean {
@@ -133,7 +114,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun nameInputListener() {
         with(binding) {
-            nameTextInputEditText.doOnTextChanged { text, start, before, count ->
+            nameTextInputEditText.doOnTextChanged { text, _, _, _ ->
                 text?.let {
 
                     nameTextInputLayout.error = when {
@@ -152,7 +133,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun phoneInputListener() {
         with(binding) {
-            phoneTextInputEditText.doOnTextChanged { text, start, before, count ->
+            phoneTextInputEditText.doOnTextChanged { text, _, _, _ ->
                 text?.let {
 
                     //verify error
@@ -183,56 +164,81 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun createContact() {
-        binding.bttSaveContact.setOnClickListener {
-            val contactName = binding.nameTextInputEditText.text.toString()
-            val contactPhoneNumber = PhoneNumberUtils.formatNumber(
-                binding.phoneTextInputEditText.text.toString(),
-                Locale.getDefault().country
-            )
-
-            val result = myViewModel.createContact(contactName, contactPhoneNumber)
-
-            if (result) {
-                Toast.makeText(
-                    this,
-                    getText(R.string.contact_created_with_success),
-                    Toast.LENGTH_SHORT
-                ).show()
-
-                shouldEnableTextEmptyError(false)
-                shouldEnableFields(true)
-                binding.nameTextInputEditText.text?.clear()
-                binding.phoneTextInputEditText.text?.clear()
-                handleCleanListBtn()
-
-                //always in the final of the operation, verify if the list is full
-                if (myViewModel.verifyIfContactListIsFull()) {
-                    shouldEnableFields(false)
-                    binding.labelForInformation.text =
-                        getString(R.string.error_when_contact_list_is_full)
-                    binding.labelForInformation.visibility = View.VISIBLE
-                }
+    //bundle
+    private fun showConfirmationDialog(
+        @StringRes title: Int,
+        @StringRes message: Int,
+        @StringRes positiveButton: Int,
+        @StringRes negativeButton: Int,
+        @DrawableRes icon: Int,
+        positiveCallback: () -> Unit
+    ) {
+        AlertDialog.Builder(this)
+            .setTitle(getString(title))
+            .setMessage(getString(message))
+            .setIcon(icon)
+            .setPositiveButton(positiveButton) { _, _ ->
+                positiveCallback.invoke()
             }
+            .setNegativeButton(negativeButton) { dialog, _ ->
+                dialog.dismiss()
+            }
+            .show()
+    }
+
+    private fun verifyIfTheContactListIsFull() {
+        if (myViewModel.verifyIfContactListIsFull()) {
+            shouldEnableTextFields(false)
+            binding.labelForInformation.text =
+                getString(R.string.error_when_contact_list_is_full)
+            binding.labelForInformation.visibility = View.VISIBLE
         }
+    }
+
+    private fun createContact() {
+        val contactName = binding.nameTextInputEditText.text.toString()
+        val contactPhoneNumber = binding.phoneTextInputEditText.text.toString()
+
+        val result = myViewModel.createContact(contactName, contactPhoneNumber, this)
+
+        if (result) {
+            Toast.makeText(
+                this,
+                getText(R.string.contact_created_with_success),
+                Toast.LENGTH_SHORT
+            ).show()
+
+            disableEmptyTextError()
+            binding.nameTextInputEditText.text?.clear()
+            binding.phoneTextInputEditText.text?.clear()
+
+            handleCleanListBtn()
+            //always in the final of the operation, verify if the list is full
+            verifyIfTheContactListIsFull()
+        }
+        //if for some reason the "contact already exist validation" in the phoneInputListener doesn't get
+        //this error, in my viewModel i still validate this, and return false with a Toast
     }
 
     private fun clearContactList() {
-        binding.bttClearList.setOnClickListener {
-            showConfirmationDialog(
-                R.string.dialog_warning_info,
-                R.string.dialog_clear_list,
-                R.string.dialog_ok,
-                R.string.dialog_cancel,
-                R.drawable.baseline_warning_24
-            )
-        }
-    }
+        myViewModel.clearContactList()
 
-    private fun goToContactList() {
-        binding.bttGoToContactList.setOnClickListener {
-            startActivity(Intent(this, ContactListActivity::class.java))
+        Toast.makeText(
+            this,
+            getString(R.string.contact_list_cleared_with_success),
+            Toast.LENGTH_SHORT
+        ).show()
+
+        disableEmptyTextError()
+        shouldEnableTextFields(true)
+
+        with(binding) {
+            labelForInformation.visibility = View.GONE
+            nameTextInputEditText.text?.clear()
+            phoneTextInputEditText.text?.clear()
         }
+
+        handleCleanListBtn()
     }
 
 }
